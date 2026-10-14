@@ -1,6 +1,8 @@
 import os
-from openai import OpenAI
+from dotenv import load_dotenv
+from google import genai
 
+load_dotenv()
 
 def load_prompt():
     """
@@ -9,38 +11,30 @@ def load_prompt():
     with open("prompt.txt", "r", encoding="utf-8") as file:
         return file.read()
 
-
 def generate_industry_analysis(industry):
+
     """
-    Generate Porter Five Forces analysis
+    Generate Porter's Five Forces analysis
     """
 
-    client = OpenAI(
-        api_key=os.getenv("OPENAI_API_KEY")
-    )
+    client = genai.Client(
+        api_key=os.getenv("GOOGLE_API_KEY")
+   )
 
     system_prompt = load_prompt()
 
-    response = client.chat.completions.create(
-        model="gpt-5-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-            },
-            {
-                "role": "user",
-                "content": f"""
-Please analyse the following industry:
+    response = client.models.generate_content(
+        model="gemini-flash-lite-latest",
+        contents=f"""
+    {system_prompt}
 
-Industry:
-{industry}
+    Please analyse the following industry:
 
-Generate a complete Porter’s Five Forces analysis.
-"""
-            }
-        ],
-        temperature=0.3
+    Industry:
+    {industry}
+
+    Generate a complete Porter's Five Forces analysis.
+    """
     )
 
-    return response.choices[0].message.content
+    return response.text
