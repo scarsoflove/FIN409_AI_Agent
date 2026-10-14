@@ -1,4 +1,7 @@
 # FIN409 Industry Analyst AI Agent
+## Demo Screenshot
+
+![AI Agent Demo](screenshot.png)
 
 ## Overview
 
